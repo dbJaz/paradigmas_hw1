@@ -15,7 +15,12 @@ int writeOnFile(string message, string fileName = "logFile.txt"){
         cout << "Couldnt open file" <<endl;
         return 1;}
 }
-void logMessage (string message, int severityLvl){
+int logMessage (string message, int severityLvl){
+
+        if (severityLvl>5 || severityLvl<1){
+            throw runtime_error("Severity level is not valid");
+        }
+    
     enum {DEBUG=1, INFO, WARNING, ERROR, CRITICAL};//asocia DEBUG,INFO,etc... a numeros empezando desde el 1
     switch (severityLvl){//ve a que caso pertenece el numero de nivel de severidad, el 1 seria debug y continuan en orden. Estos numeros fueron asignados por el enum. 
         case DEBUG:
@@ -29,7 +34,7 @@ void logMessage (string message, int severityLvl){
         case CRITICAL: 
             writeOnFile("[CRITICAL]<" + message + ">", "logFile.txt");break;
         }
-    return;
+    return 0;
 }
 //(b) Las dos funciones que siguen unicamente escriben en el archivo que esta predeterminado. Usando sobrecarga de funciones es posible que cpp distinga que funcion quiero usar dependiendo de los parametros que le paso. Por eso cuando en main se llama a la funcion logMessage no siempre se corre el mismo codigo. Dependiendo si le pase un string y un int, dos strings y un int o dos strings el codigo corre las dintintas funciones. 
 void logMessage (string message, string fileName, int codeLine){
@@ -39,6 +44,23 @@ void logMessage (string message, string userName){
     writeOnFile ("[SECURITY]<" + message + ", log by " + userName +">", "logFile.txt");
 }
 int main(){
+    //HAGO UNA EJECUCION AUTOMATICA, ES MAS LINDA LA INTERACTIVA :)
+    try{
+        logMessage("Debug",1);
+        logMessage("Info",2);
+        logMessage("Warning",3);
+        logMessage("Error",4);
+        logMessage("Critical",5);
+        logMessage("Line error","file name",1);
+        logMessage("Security","User name");
+        logMessage("Runtime error",6);//para probar el programa interactivo comentar esta linea. 
+    }
+    catch(const runtime_error& e){// el error se lanza desde dentro de la funcion y se atrapa en main para que se corte el programa, de lo contrario se imprimiria el mensaje de error pero no se cortaria.
+        cout << "[ERROR]<"<< e.what()<<">"<<endl;
+        return 1; 
+    }
+    //---------------------------------------------------------------------------
+    //COMIENZA EL PROGRAMA INTERACTIVO:
     enum {DEBUG=1, INFO, WARNING, ERROR, CRITICAL,SECURITY, LINE_ERROR};//uso el enum para asignarle un numero a cada una de estas cosas, para evitar que haya errores ortograficos cuando el usuario debe ingresar que tipo de error quiere registrar. Al asociar estos errores con un numero es mas simple utilizar switch para ir cambiando entre los diferentes logMessage dependiendo de lo que ingrese el usuario. 
     int elected;
     string message;
@@ -59,10 +81,7 @@ int main(){
                 cin>> elected;
                 if(elected>8 || elected<1){
                     throw runtime_error("That number is not part of the options");  
-                }//probar si es int
-                // if(elected>8 || elected<1){
-                //     throw "That numbers is not part of the options";  
-                // }//probar si es int
+                }
                 else if (8==elected){break;}
 
                 switch (elected){
@@ -92,10 +111,9 @@ int main(){
                         break;
                     }
             }    
-        }catch(runtime_error e){
+        }
+        catch(runtime_error& e){// se hace referencia para no hacer una copia. 
             cout << "[ERROR]<"<< e.what() <<">"<< endl;//imprime los mensajes de los runtime_errors, la funcion .what() permite imprimir el mensaje de cada runtime error dependiendo cual hizo saltar el error.
             return 1;
-        }
-        // catch(consy char* e){
-        //     cout << "<[ERROR] "<< e <<">"<< endl;}      
+        }     
     return 0;}
