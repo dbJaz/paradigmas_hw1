@@ -1,5 +1,4 @@
 #include<iostream>
-#include<stdexcept>
 using namespace std;
 // (a) La idea fue hacer vector de vectores (una matriz), y para lograr rellenar la matriz con los valores solicitados, incorpore un contador que vaya aumentando en 1 para incorporar cada valor en las pociciones de 1 a n del vector chico. Osea que como los vectores se van agregando de a uno, al final del vector general (que terminaria siendo la matriz), los numeros quedarian en el orden solicitado. 
 //Si todos los punteros para los vectores se alocan correctamente en la memoria, la funcion devuelve una matriz. En el caso que falle se informa que el contenido no pudo ser guardado de manera correcta.
@@ -66,7 +65,7 @@ int main(){
         printMatrix(4,nullMatrix);// prueba matriz vacia pasandole un parametro valido
         deleteMatrix(n,myMatrix);}//libera la memoria reservada para myMatrix. 
         catch(char const* e){//atrapa el throw previo e imprime su mensaje. 
-            cout << "<[ERROR]"<< e <<endl;
+            cout << "<[ERROR]"<< e <<">"<< endl;
         }
         return 0;
 }
